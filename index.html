@@ -41,6 +41,18 @@
         <p>Feito com 💜 na GambiConf</p>
     </footer>
 
+    <div id="qr-modal" class="qr-modal" aria-hidden="true" style="display:none;">
+        <div class="qr-overlay" tabindex="-1" data-action="close-qr"></div>
+        <div class="qr-dialog" role="dialog" aria-modal="true" aria-labelledby="qr-title">
+            <button class="qr-close" aria-label="Fechar QR" data-action="close-qr">✕</button>
+            <h3 id="qr-title">Compartilhar gambiarra</h3>
+            <div class="qr-body">
+                <img id="qr-image" alt="QR code para compartilhar" src="" />
+                <p id="qr-url" class="sr-only"></p>
+            </div>
+        </div>
+    </div>
+
     <script src="js/script.js"></script>
 </body>
 </html>

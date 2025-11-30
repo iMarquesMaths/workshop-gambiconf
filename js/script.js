@@ -231,6 +231,82 @@ document.addEventListener('DOMContentLoaded', () => {
         return button;
     }
 
+    // ==================== QR Code Sharing ====================
+
+    /**
+     * Gera a URL que será codificada no QR (aponta para a página com hash)
+     * @param {string} message - Texto da gambiarra
+     * @returns {string} URL completa para compartilhar
+     */
+    function buildShareUrl(message) {
+        const base = `${location.origin}${location.pathname}`;
+        // Usamos hash para filtrar a mensagem; o app pode ler location.hash se quisermos
+        const hash = `gambiarra=${encodeURIComponent(message)}`;
+        return `${base}#${hash}`;
+    }
+
+    /**
+     * Cria o botão que abre o modal com QR code
+     * @param {string} messageText
+     * @returns {HTMLElement}
+     */
+    function createQRButton(messageText) {
+        const btn = document.createElement('button');
+        btn.className = 'qr-button';
+        btn.textContent = '🔗 QR';
+        btn.setAttribute('aria-label', 'Mostrar QR code para compartilhar');
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const shareUrl = buildShareUrl(messageText);
+            showQRModal(shareUrl);
+        });
+
+        return btn;
+    }
+
+    // Modal helpers
+    const qrModal = document.getElementById('qr-modal');
+    const qrImage = document.getElementById('qr-image');
+    const qrUrlText = document.getElementById('qr-url');
+
+    function showQRModal(shareUrl) {
+        if (!qrModal || !qrImage) return;
+
+        // Usamos Google Chart API para gerar o QR (simples e sem dependências)
+        const qrSrc = `https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${encodeURIComponent(shareUrl)}`;
+        qrImage.src = qrSrc;
+        qrUrlText.textContent = shareUrl;
+        qrModal.style.display = 'flex';
+        qrModal.setAttribute('aria-hidden', 'false');
+
+        // Escutar ESC para fechar
+        document.addEventListener('keydown', handleEscClose);
+    }
+
+    function hideQRModal() {
+        if (!qrModal || !qrImage) return;
+        qrModal.style.display = 'none';
+        qrModal.setAttribute('aria-hidden', 'true');
+        qrImage.src = '';
+        qrUrlText.textContent = '';
+        document.removeEventListener('keydown', handleEscClose);
+    }
+
+    function handleEscClose(e) {
+        if (e.key === 'Escape') hideQRModal();
+    }
+
+    // Close via overlay/button delegation
+    if (qrModal) {
+        qrModal.addEventListener('click', (e) => {
+            const action = e.target && e.target.dataset && e.target.dataset.action;
+            if (action === 'close-qr' || e.target.classList.contains('qr-overlay')) {
+                hideQRModal();
+            }
+        });
+    }
+
     // Função para criar o elemento HTML de um card
     function createMessageCard(msg, index) {
         const card = document.createElement('div');
@@ -248,7 +324,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardHeader = document.createElement('div');
         cardHeader.className = 'card-header';
         cardHeader.appendChild(content);
-        cardHeader.appendChild(createCopyButton(msg.message));
+
+        const controls = document.createElement('div');
+        controls.className = 'card-controls';
+        controls.appendChild(createCopyButton(msg.message));
+        controls.appendChild(createQRButton(msg.message));
+
+        cardHeader.appendChild(controls);
 
         const footer = document.createElement('div');
         footer.className = 'message-author';
