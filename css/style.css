@@ -373,3 +373,26 @@ body.dark-mode .stat-snippet {
 .card-color-2 { border-top-color: #d2a8ff; }
 .card-color-3 { border-top-color: #79c0ff; }
 .card-color-4 { border-top-color: #ffa657; }
+
+/* QR modal and QR button styles */
+.qr-button {
+    background: #ffffff;
+    color: var(--text-color);
+    border: 1px solid #e6e6e6;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.qr-button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+.qr-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.qr-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); }
+.qr-dialog { position: relative; background: var(--card-bg); padding: 20px; border-radius: 10px; box-shadow: 0 12px 36px rgba(0,0,0,0.35); max-width: 420px; width: 90%; z-index: 1010; }
+.qr-close { position: absolute; top: 8px; right: 8px; background: transparent; border: none; font-size: 1.1rem; cursor: pointer; }
+.qr-body { display:flex; flex-direction: column; gap: 12px; align-items: center; }
+.qr-body img { width: 280px; height: 280px; max-width: 100%; border-radius: 6px; background: white; padding: 8px; }
+
+.sr-only { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
